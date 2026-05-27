@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nail Art — Ulaanbaatar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<!-- <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initGoogleMap" async defer></script> -->
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">Nail <em>Art</em></a>
+  <div class="nav-center">
+    <ul class="nav-links">
+      <li><a onclick="scrollToSection('salons-wrap')">Салонууд</a></li>
+      <li><a onclick="scrollToSection('uilchilgee')">Үйлчилгээ</a></li>
+      <li><a onclick="scrollToSection('uramshuulal')">Урамшуулал</a></li>
+      <li><a onclick="scrollToSection('map-wrap')">Газрын зураг</a></li>
+    </ul>
+  </div>
+  <div class="nav-right">
+    <span id="navAuthBtns">
+      <button class="nav-btn" onclick="openAuth('login')">Sign In</button>
+      <button class="nav-btn primary" onclick="openAuth('signup')">Join Free</button>
+    </span>
+    <div class="user-avatar" id="userAvatar" onclick="toggleUserMenu()"></div>
+    <div class="user-menu" id="userMenu">
+      <div class="user-menu-header">
+        <div class="user-menu-name" id="menuName"></div>
+        <div class="user-menu-email" id="menuEmail"></div>
+      </div>
+      <a onclick="openBookings(); return false">My Bookings</a>
+      <div class="divider"></div>
+      <button onclick="logout()">Sign Out</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">Ulaanbaatar · Mongolia</p>
+  <h1>The Art of<br><em>Beautiful Nails</em></h1>
+  <p class="hero-sub">Discover and book Ulaanbaatar's finest manicure & nail art salons — all in one place.</p>
+  <div class="hero-divider"></div>
+  <div class="hero-stats">
+    <div class="hero-stat"><span class="num" id="statSalons">—</span><span class="lbl">Салон</span></div>
+    <div class="hero-stat"><span class="num">12</span><span class="lbl">Дүүрэг</span></div>
+    <div class="hero-stat"><span class="num" id="statServices">—</span><span class="lbl">Үйлчилгээ</span></div>
+  </div>
+  <div class="hero-scroll">Scroll</div>
+</section>
+
+<!-- SEARCH -->
+<section class="search-section" id="search">
+  <span class="search-label">Салон хайх</span>
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Салон нэр эсвэл үйлчилгээгээр хайх…" oninput="debounceFilter()">
+    <select id="districtFilter" onchange="applyFilters()">
+      <option value="">Бүх дүүрэг</option>
+      <option>Khan-Uul</option>
+      <option>Sukhbaatar</option>
+      <option>Bayangol</option>
+      <option>Chingeltei</option>
+      <option>Songinokhairkhan</option>
+      <option>Bayanzurkh</option>
+    </select>
+    <button onclick="applyFilters()">Хайх</button>
+  </div>
+  <div class="filter-chips">
+    <button class="chip active" onclick="setChip(this, '')">Бүгд</button>
+    <button class="chip" onclick="setChip(this, 'Gel')">Гель хумс</button>
+    <button class="chip" onclick="setChip(this, 'Nail Art')">Nail Art</button>
+    <button class="chip" onclick="setChip(this, 'Manicure')">Маникюр</button>
+    <button class="chip" onclick="setChip(this, 'Pedicure')">Педикюр</button>
+    <button class="chip" onclick="setChip(this, 'Extensions')">Хумс сунгалт</button>
+  </div>
+</section>
+
+<!-- SALONS WRAP — 3 sub-sections -->
+<div id="salons-wrap">
+
+  <!-- Recommended -->
+  <section class="salon-row-section" id="salons">
+    <div class="row-head">
+      <div>
+        <span class="eyebrow">Манай сонголт</span>
+        <h2>Санал болгох <em>Салонууд</em></h2>
+      </div>
+      <div class="row-nav-btns">
+        <button class="row-btn" onclick="slideRow('recommended', -1)">&#8249;</button>
+        <button class="row-btn" onclick="slideRow('recommended',  1)">&#8250;</button>
+      </div>
+    </div>
+    <div class="cards-track-wrap">
+      <div class="cards-track" id="track-recommended"></div>
+    </div>
+  </section>
+
+  <!-- New in Nail Time -->
+  <section class="salon-row-section" id="new-in-nailtime">
+    <div class="row-head">
+      <div>
+        <span class="eyebrow">Шинэ нэмэлт</span>
+        <h2>New in <em>Nail Time</em></h2>
+      </div>
+      <div class="row-nav-btns">
+        <button class="row-btn" onclick="slideRow('new', -1)">&#8249;</button>
+        <button class="row-btn" onclick="slideRow('new',  1)">&#8250;</button>
+      </div>
+    </div>
+    <div class="cards-track-wrap">
+      <div class="cards-track" id="track-new"></div>
+    </div>
+  </section>
+
+  <!-- Trending -->
+  <section class="salon-row-section" id="trending">
+    <div class="row-head">
+      <div>
+        <span class="eyebrow">Хамгийн их захиалагдсан</span>
+        <h2>Trending <em>Салонууд</em></h2>
+      </div>
+      <div class="row-nav-btns">
+        <button class="row-btn" onclick="slideRow('trending', -1)">&#8249;</button>
+        <button class="row-btn" onclick="slideRow('trending',  1)">&#8250;</button>
+      </div>
+    </div>
+    <div class="cards-track-wrap">
+      <div class="cards-track" id="track-trending"></div>
+    </div>
+  </section>
+
+</div>
+
+<!-- MAP -->
+<section class="view-wrap" id="map-wrap">
+  <div class="section-head">
+    <span class="eyebrow">Байршил</span>
+    <h2>Газрын <em>Зураг</em></h2>
+  </div>
+  <div id="gmap"></div>
+</section>
+
+<!-- ҮЙЛЧИЛГЭЭ -->
+<section class="info-section" id="uilchilgee">
+  <div class="section-head">
+    <span class="eyebrow">Бидний санал</span>
+    <h2>Үйлчилгээ<em>нүүд</em></h2>
+  </div>
+  <div class="services-grid">
+    <div class="svc-card">
+      <div class="svc-icon">💅</div>
+      <h3>Гель маникюр</h3>
+      <p>Удаан эдэлгээтэй, гялалзсан гель хумсны үйлчилгээ. 3–4 долоо хоног хадгалагдана.</p>
+      <div class="svc-price-tag">₮20,000-өөс</div>
+    </div>
+    <div class="svc-card">
+      <div class="svc-icon">🎨</div>
+      <h3>Nail Art дизайн</h3>
+      <p>Гар урлалын дизайн, 3D чимэглэл, chrome powder, ombre зэрэг олон төрлийн загвар.</p>
+      <div class="svc-price-tag">₮3,000-өөс/хумс</div>
+    </div>
+    <div class="svc-card">
+      <div class="svc-icon">✨</div>
+      <h3>Хумс сунгалт</h3>
+      <p>Акрил болон гель-X аргаар хумс уртасгах. Байгалийн харагдацтай, бат бөх.</p>
+      <div class="svc-price-tag">₮60,000-өөс</div>
+    </div>
+    <div class="svc-card">
+      <div class="svc-icon">🌸</div>
+      <h3>Спа маникюр</h3>
+      <p>Гарны арьс, хумсны иж бүрэн арчилгаа. Парафин эмчилгээ багтана.</p>
+      <div class="svc-price-tag">₮25,000-өөс</div>
+    </div>
+    <div class="svc-card">
+      <div class="svc-icon">👣</div>
+      <h3>Педикюр</h3>
+      <p>Хөлийн иж бүрэн арчилгаа — экспресс болон спа хувилбартай.</p>
+      <div class="svc-price-tag">₮18,000-өөс</div>
+    </div>
+    <div class="svc-card">
+      <div class="svc-icon">💎</div>
+      <h3>Хумс засвар</h3>
+      <p>Хугарсан, гэмтсэн хумсыг нөхөн засварлах мэргэжлийн үйлчилгээ.</p>
+      <div class="svc-price-tag">₮5,000-өөс</div>
+    </div>
+  </div>
+</section>
+
+<!-- УРАМШУУЛАЛ -->
+<section class="info-section promo-section" id="uramshuulal">
+  <div class="section-head">
+    <span class="eyebrow">Тусгай санал</span>
+    <h2>Урамшуулал <em>&amp; Хөнгөлөлт</em></h2>
+  </div>
+  <div class="promos-grid">
+    <div class="promo-card featured">
+      <div class="promo-badge">🔥 Халуун санал</div>
+      <h3>Анхны захиалга</h3>
+      <p>Шинэ хэрэглэгчдэд анхны захиалгаасаа <strong>20%</strong> хөнгөлөлт.</p>
+      <div class="promo-code">Код: <span>NEWBIE20</span></div>
+      <button class="promo-btn" onclick="openAuth('signup')">Бүртгүүлж авах</button>
+    </div>
+    <div class="promo-card">
+      <div class="promo-badge">👯 Найзтайгаа</div>
+      <h3>Хоёр дахин захиалга</h3>
+      <p>Найзтайгаа хамт ирэхэд хоёулаа <strong>15%</strong> хөнгөлөлт эдлэнэ.</p>
+      <div class="promo-code">Код: <span>BFFS15</span></div>
+      <button class="promo-btn" onclick="scrollToSection('salons-wrap')">Салон сонгох</button>
+    </div>
+    <div class="promo-card">
+      <div class="promo-badge">🌙 Оройн цаг</div>
+      <h3>Оройн урамшуулал</h3>
+      <p>17:00–20:00 цагийн захиалганд <strong>10%</strong> хөнгөлөлт.</p>
+      <div class="promo-code">Код: <span>EVENING10</span></div>
+      <button class="promo-btn" onclick="scrollToSection('salons-wrap')">Захиалах</button>
+    </div>
+    <div class="promo-card">
+      <div class="promo-badge">🎂 Төрсөн өдөр</div>
+      <h3>Төрсөн өдрийн бэлэг</h3>
+      <p>Төрсөн өдрийн сард <strong>25%</strong> хөнгөлөлт. Бүртгэлтэй хэрэглэгчдэд автоматаар нэмэгдэнэ.</p>
+      <div class="promo-code">Автомат</div>
+      <button class="promo-btn" onclick="openAuth('signup')">Бүртгүүлэх</button>
+    </div>
+  </div>
+</section>
+
+<!-- SALON MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleModalOutside(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-slider" id="modalSlider"></div>
+    <div class="modal-tabs">
+      <button class="modal-tab active" onclick="switchTab(this, 'info')">Info & Book</button>
+      <button class="modal-tab" onclick="switchTab(this, 'reviews')">Сэтгэгдэл</button>
+    </div>
+    <div class="modal-panel active" id="tab-info">
+      <div class="modal-district" id="mDistrict"></div>
+      <div class="modal-name" id="mName"></div>
+      <div class="info-grid" id="mInfo"></div>
+      <div class="svc-title">Үйлчилгээ &amp; Үнэ</div>
+      <div class="modal-services" id="mServices"></div>
+      <div id="bookingArea"></div>
+    </div>
+    <div class="modal-panel" id="tab-reviews">
+      <div class="reviews-list" id="reviewsList"></div>
+      <div id="writeReviewArea"></div>
+    </div>
+  </div>
+</div>
+
+<!-- AUTH -->
+<div class="auth-overlay" id="authOverlay" onclick="handleAuthOutside(event)">
+  <div class="auth-box">
+    <button class="auth-close" onclick="closeAuth()">✕</button>
+    <h2 id="authTitle"></h2>
+    <p class="auth-sub" id="authSub"></p>
+    <div class="auth-form">
+      <input type="text"     id="fName"  placeholder="Нэр">
+      <input type="email"    id="fEmail" placeholder="И-мэйл хаяг">
+      <input type="password" id="fPass"  placeholder="Нууц үг (6+ тэмдэгт)">
+      <div class="field-error" id="authError"></div>
+      <button class="auth-submit" id="authSubmitBtn" onclick="submitAuth()">
+        <span id="authBtnText"></span>
+        <div class="spinner" id="authSpinner"></div>
+      </button>
+      <div class="auth-divider"><span>эсвэл</span></div>
+      <button class="google-btn" onclick="googleSignIn()">
+        <svg viewBox="0 0 24 24" width="18" height="18">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+        </svg>
+        Google-ээр нэвтрэх
+      </button>
+    </div>
+    <p class="auth-switch" id="authSwitch"></p>
+  </div>
+</div>
+
+<!-- BOOKINGS -->
+<div class="bookings-overlay" id="bookingsOverlay" onclick="handleBookingsOutside(event)">
+  <div class="bookings-panel">
+    <button class="auth-close" style="position:absolute;top:1rem;right:1rem" onclick="closeBookings()">✕</button>
+    <h2>Миний <em>Захиалгууд</em></h2>
+    <div id="bookingsList"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<footer id="about">
+  <div class="footer-logo">Nail <em>Art</em></div>
+  <p>Улаанбаатар хотын хумсны салонуудын нэгдсэн платформ.</p>
+  <div class="footer-api-note">API: <code id="footerApi"></code> · Maps: <code id="footerMaps"></code></div>
+  <p class="footer-copy">© 2025 Nail Art UB · Бүх эрх хуулиар хамгаалагдсан</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
